@@ -2,5 +2,5 @@
 .ipynb_checkpoints
 yelp_academic_dataset_review.json
 *.out
-yelp.py
 .idea
+pvt.csv
