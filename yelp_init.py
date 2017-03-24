@@ -4,8 +4,8 @@ Load a trained ratings model populate new ratings column in DB
 """
 
 import time
-import json
 import psycopg2
+import sys
 
 # Grab authentication info from file
 sql_user = ""
@@ -34,6 +34,14 @@ conn_string = "host=" + sql_ip + " dbname=" + sql_db + " user=" + sql_user + \
               " password=" + sql_pass
 conn = psycopg2.connect(conn_string)
 cur = conn.cursor()
+
+# Confirm with user to proceed dropping table
+ans = raw_input("This will drop table yelp2.  Are you sure? (Y/N)").lower()
+if ans == 'y':
+    break
+else:
+    print "Exiting..."
+    sys.exit()
 
 # Create the Yelp table on Postgres server
 cur.execute("DROP TABLE IF EXISTS yelp2;")
