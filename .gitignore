@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 .ipynb_checkpoints
-yelp_academic_dataset_review.json
 *.out
+*.json
+*.pkl
 .idea
-pvt.csv
+data/pvt.csv
