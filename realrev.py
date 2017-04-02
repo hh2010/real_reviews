@@ -9,7 +9,6 @@ a new adjusted rating for the business.
 
 # Add function to compare old score to new (which ones flipped)
 # Can we look up and compare the text of the reviews?
-# Iterate through list of top businesses and rate them
 
 import sys
 import time
@@ -199,8 +198,8 @@ class Nlp(object):
      and apply weightings to the reviews accordingly
     """
     def __init__(self, reviews, stars, preds, name, country, city,
-                 pols_bar=(0.6, -0.6), subj_bar=0.6, wc_bar=20, pols_pen=0.75,
-                 subj_pen=0.75, wc_pen=0.25):
+                 pols_bar=(0.6, -0.6), subj_bar=0.6, wc_bar=35, pols_pen=0.6,
+                 subj_pen=0.6, wc_pen=0.25):
 
         """
         Penalize reviews based on sentiment analysis and word count
@@ -224,8 +223,10 @@ class Nlp(object):
         self.pols_wts = [pols_pen if any([x >= pols_bar[0], x <= pols_bar[1]]) else 1 for x in self.pols]
         self.subj_wts = [subj_pen if x >= subj_bar else 1 for x in self.subj]
         self.wc_wts = [wc_pen if x <= wc_bar else 1 for x in self.wc]
-        self.avg_wts = [np.mean(x) for x in zip(self.pols_wts,
-                                                self.subj_wts, self.wc_wts)]
+        self.avg_wts_tmp = [np.mean(x) for x in zip(self.pols_wts,
+                                                    self.subj_wts)]
+        self.avg_wts = [x if x != 1 else y for x, y in zip(self.wc_wts,
+                                                           self.avg_wts_tmp)]
         self.pred_wts = [i*j for i, j in zip(preds, self.avg_wts)]
         self.stars_avg = sum(map(float, stars))/len(stars)
         self.new_rating = sum(map(float, self.pred_wts))/float(sum(self.avg_wts))
@@ -290,13 +291,6 @@ def update_db(bus_id=args.bus_id):
     # Limited to 25,000 Yelp API calls per day
     # There are over 4 million reviews and over 140,000 businesses in database
     bus_info = Yelp(bus_id)
-
-    #  Grab review text from SQL database
-    sql.pull_reviews()
-
-    # Use our trained Random Forests model and TFIDF vectorizer
-    #  to determine whether each review is "Favorable" or "Unfavorable"
-    model.predict(sql.reviews)
 
     #  Grab review text from SQL database
     sql.pull_reviews()
