@@ -1,7 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
-.ipynb_checkpoints
 *.out
 *.json
-*.pkl
-.idea
 data/pvt.csv

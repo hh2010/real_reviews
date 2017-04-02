@@ -1,4 +1,7 @@
-import realrev
+"""
+Flask App to render the Riffle website
+"""
+import riffle
 from flask import Flask, render_template, request
 from wtforms import Form
 
@@ -20,7 +23,7 @@ app.config['SECRET_KEY'] = key
 @app.route("/", methods=['GET', 'POST'])
 def reviews():
     """
-    Load the Real Reviews page and populate the variables used on the site
+    Load the Riffle page and populate the variables used on the site
     """
     form = Form(request.form)
     bus_id = request.form.get("business")
@@ -35,7 +38,7 @@ def reviews():
 
 def bus_data(bus_id):
     """
-    Populate business data from Real Reviews module and Yelp API
+    Populate business data from Riffle module and Yelp API
     Input: Business ID number
     Output: Dictionary
     Side-Effects: Updated SQL database
@@ -48,7 +51,7 @@ def bus_data(bus_id):
                 'unfav_count': 0, 'avg_wts': 0}
 
     # Instantiate the SQL class for the business data we will be pulling
-    sql = realrev.Sql(bus_id)
+    sql = riffle.Sql(bus_id)
 
     # Check if we have previously analyzed the requested business
     # If not, pull the raw data and processing the data
@@ -76,19 +79,19 @@ def bus_data(bus_id):
     # Get business data (name, country, etc) from Yelp API
     # Limited to 25,000 Yelp API calls per day
     # There are over 4 million reviews and over 140,000 businesses in database
-    bus_info = realrev.Yelp(bus_id)
+    bus_info = riffle.Yelp(bus_id)
 
     #  Grab review text from SQL database
     sql.pull_reviews()
 
     # Use our trained Random Forests model and TFIDF vectorizer
     #  to determine whether each review is "Favorable" or "Unfavorable"
-    realrev.model.predict(sql.reviews)
+    riffle.model.predict(sql.reviews)
 
     # Conduct sentiment analysis and evaluate word counts in order to
     #  "penalize" the weighting of reviews that don't fit the threshold
-    nlp = realrev.Nlp(sql.reviews, sql.stars, realrev.model.preds,
-                      bus_info.name, bus_info.country, bus_info.city)
+    nlp = riffle.Nlp(sql.reviews, sql.stars, riffle.model.preds,
+                     bus_info.name, bus_info.country, bus_info.city)
 
     # Assign variables from all the objects attributes we created
     #  and then input them into a tuple.
@@ -107,8 +110,8 @@ def bus_data(bus_id):
     count_3 = sql.stars.count(3)
     count_2 = sql.stars.count(2)
     count_1 = sql.stars.count(1)
-    fav_count = (realrev.model.preds == 1).sum()
-    unfav_count = (realrev.model.preds == 0).sum()
+    fav_count = (riffle.model.preds == 1).sum()
+    unfav_count = (riffle.model.preds == 0).sum()
     avg_wts = nlp.avg_wts.sum() / len(avg_wts)
     bus_tup = (bus_id, name, city, country, old_rating, new_rating,
                rev_count, count_5, count_4, count_3, count_2, count_1,

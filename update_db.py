@@ -8,14 +8,14 @@ Input files must be in the CSV format "#reviews,business_id"
 """
 
 import sys
-import realrev
+import riffle
 
 # Set the default encoding
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 # Go through every Business ID in the file and update the SQL database
-with open(realrev.args.input, 'r') as f:
+with open(riffle.args.input, 'r') as f:
     for line in f:
         bus_id = line.strip().split(',')[1]
-        realrev.update_db(bus_id)
+        riffle.update_db(bus_id)

@@ -2,7 +2,7 @@
 # encoding=utf8
 """
 This script will load the models created in the
-Real Reviews Jupyter notebook.
+Riffle Jupyter notebook.
 Specify a Business ID number to calculate
 a new adjusted rating for the business.
 """
@@ -290,7 +290,14 @@ def update_db(bus_id=args.bus_id):
     # Get business data (name, country, etc) from Yelp API
     # Limited to 25,000 Yelp API calls per day
     # There are over 4 million reviews and over 140,000 businesses in database
-    bus_info = Yelp(bus_id)
+    while True:
+        try:
+            bus_info = Yelp(bus_id)
+            break
+        except ValueError:
+            pass
+        except YelpAPIError:
+            return
 
     #  Grab review text from SQL database
     sql.pull_reviews()
