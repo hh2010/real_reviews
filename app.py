@@ -45,7 +45,7 @@ def bus_data(bus_id):
                 'city': 'City', 'country': 'Country', 'old_rating': 0,
                 'new_rating': 0,  'rev_count': 0, 'count_5': 0, 'count_4': 0,
                 'count_3': 0, 'count_2': 0, 'count_1': 0, 'fav_count': 0,
-                'unfav_count': 0}
+                'unfav_count': 0, 'avg_wts': 0}
 
     # Instantiate the SQL class for the business data we will be pulling
     sql = realrev.Sql(bus_id)
@@ -70,6 +70,7 @@ def bus_data(bus_id):
         bus_dict['count_1'] = sql_tup[11]
         bus_dict['fav_count'] = sql_tup[12]
         bus_dict['unfav_count'] = sql_tup[12]
+        bus_dict['avg_wts'] = sql_tup[13]
         return bus_dict
 
     # Get business data (name, country, etc) from Yelp API
@@ -108,9 +109,10 @@ def bus_data(bus_id):
     count_1 = sql.stars.count(1)
     fav_count = (realrev.model.preds == 1).sum()
     unfav_count = (realrev.model.preds == 0).sum()
+    avg_wts = nlp.avg_wts.sum() / len(avg_wts)
     bus_tup = (bus_id, name, city, country, old_rating, new_rating,
                rev_count, count_5, count_4, count_3, count_2, count_1,
-               fav_count, unfav_count)
+               fav_count, unfav_count, avg_wts)
     sql.insert(bus_tup)
     for key in bus_dict.keys():
         x = 0

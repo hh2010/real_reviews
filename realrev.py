@@ -27,6 +27,7 @@ sys.setdefaultencoding('utf8')
 # Set up the Argument Parser to grab Business ID number
 parser = argparse.ArgumentParser()
 parser.add_argument('--bus_id', default='JyxHvtj-syke7m9rbza7mA')
+parser.add_argument('--input', default='data/bus_id.csv')
 args = parser.parse_args()
 
 # Create our classes to be used in this file or exported to Flask app
@@ -101,8 +102,9 @@ class Sql(object):
         self.query = """
                 INSERT INTO yelp_stored (business_id, name, city, country,
                 old_rating, new_rating, rev_count, count_5, count_4, count_3,
-                count_2, count_1, fav_count, unfav_count)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                count_2, count_1, fav_count, unfav_count, avg_wts)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s)
                 """
         self.cur.execute(self.query, bus_tup)
         self.conn.commit()
@@ -227,7 +229,6 @@ class Nlp(object):
         self.pred_wts = [i*j for i, j in zip(preds, self.avg_wts)]
         self.stars_avg = sum(map(float, stars))/len(stars)
         self.new_rating = sum(map(float, self.pred_wts))/float(sum(self.avg_wts))
-        self.output()
 
     def output(self):
         """
@@ -250,7 +251,7 @@ model = Model()
 
 
 def run(bus_id=args.bus_id):
-    """ Test run-through the classes to output results of our model """
+    """ Run a Business ID through the model and output some results"""
     start_sql = time.time()
     sql = Sql(bus_id)
     end_sql = time.time()
@@ -273,5 +274,64 @@ def run(bus_id=args.bus_id):
     print "Model Time: ", (end_model - start_model)
     print "NLP Time: ", (end_nlp - start_nlp)
 
-# business_id, city, country, old_rating, new_rating, rev_count, count_5,
-#   count_4, count_3, count_2, count_1, fav_count, unfav_count
+
+def update_db(bus_id=args.bus_id):
+    """ Run a Business ID through the model """
+    # Instantiate the SQL class for the business data we will be pulling
+    sql = Sql(bus_id)
+
+    # Check if we have previously analyzed the requested business
+    # If not, pull the raw data and processing the data
+    if sql.check() is not False:
+        print "Already in database!"
+        return
+
+    # Get business data (name, country, etc) from Yelp API
+    # Limited to 25,000 Yelp API calls per day
+    # There are over 4 million reviews and over 140,000 businesses in database
+    bus_info = Yelp(bus_id)
+
+    #  Grab review text from SQL database
+    sql.pull_reviews()
+
+    # Use our trained Random Forests model and TFIDF vectorizer
+    #  to determine whether each review is "Favorable" or "Unfavorable"
+    model.predict(sql.reviews)
+
+    #  Grab review text from SQL database
+    sql.pull_reviews()
+
+    # Use our trained Random Forests model and TFIDF vectorizer
+    #  to determine whether each review is "Favorable" or "Unfavorable"
+    model.predict(sql.reviews)
+
+    # Conduct sentiment analysis and evaluate word counts in order to
+    #  "penalize" the weighting of reviews that don't fit the threshold
+    nlp = Nlp(sql.reviews, sql.stars, model.preds,
+              bus_info.name, bus_info.country, bus_info.city)
+
+    # Assign variables from all the objects attributes we created
+    #  and then input them into a tuple.
+    # The tuple is used to populate the SQL database for faster lookup of
+    #  our analysis at a later time
+    # The tuple is also used to populate our dictionary which will be
+    #  used for variables that will be rendered on our website
+    name = nlp.name
+    city = nlp.city
+    country = nlp.country
+    old_rating = int(100 * nlp.stars_avg / 5)
+    new_rating = int(nlp.new_rating * 100)
+    rev_count = len(sql.reviews)
+    count_5 = sql.stars.count(5)
+    count_4 = sql.stars.count(4)
+    count_3 = sql.stars.count(3)
+    count_2 = sql.stars.count(2)
+    count_1 = sql.stars.count(1)
+    fav_count = (model.preds == 1).sum()
+    unfav_count = (model.preds == 0).sum()
+    avg_wts = int(100*sum(nlp.avg_wts) / len(nlp.avg_wts))
+    bus_tup = (bus_id, name, city, country, old_rating, new_rating,
+               rev_count, count_5, count_4, count_3, count_2, count_1,
+               fav_count, unfav_count, avg_wts)
+    sql.insert(bus_tup)
+    print bus_tup
