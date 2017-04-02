@@ -1,0 +1,40 @@
+/*********************************************
+ * GLOBAL STYLES
+ *********************************************/
+html,
+textarea {
+    resize: none;
+}
+
+progress {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0;
+    height: 50px;
+    border-radius: 50px;
+    background-color: blue;
+}
+progress::-webkit-progress-bar {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0;
+    height: 50px;
+    border-radius: 50px;
+    background-color: blue;
+}
+progress::-webkit-progress-value {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0;
+    height: 50px;
+    border-radius: 50px;
+    background-color: blue;
+}
+progress::-moz-progress-bar {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0;
+    height: 50px;
+    border-radius: 50px;
+    background-color: blue;
+}

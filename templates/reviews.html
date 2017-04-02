@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <title>Real Reviews</title>
+       <link rel="stylesheet" media="screen" href ="static/css/bootstrap.min.css">
+       <link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
+       <link rel="stylesheet" href="static/css/hh.css">
+       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+
+
+<div class="container">
+
+  <h2>Real Reviews</h2>
+  <form action="" method="post" role="form">
+    {{ form.csrf }}
+    <div class="form-group">
+      <label for="business"><h3><b>Type the Business ID:</h3></b></label>
+      <br>
+      <input type="text" class="form-control" id="business" name="business" value="JyxHvtj-syke7m9rbza7mA">
+    </div>
+    <button type="submit" name="btn" class="btn btn-success">Rate!</button>
+  </form>
+  <h2><u>Yelp Business Analysis</u></h2>
+  <h3>{{data['name']}}</h3>
+  <h3>{{data['city']}}</h3>
+  <h3>{{data['country']}}</h3>
+  <h3>New Rating: {{data['new_rating']}}%</h3>
+    <progress class='progress' value={{data['new_rating']}} max="100"></progress>
+
+  <h3>Old Rating: {{data['old_rating']}}%</h3>
+    <progress class='progress' value={{data['old_rating']}} max="100"></progress>
+
+  <!--{% with messages = get_flashed_messages(with_categories=true) %}-->
+      <!--{% if messages %}-->
+
+  <!--{% for message in messages %}-->
+      <!--{% if "Exist" not in message[1]: %}-->
+          <!--<div class="alert alert-info">-->
+          <!--<strong>{{ message[1] }}</strong>-->
+          <!--</div>-->
+      <!--{% endif %}-->
+
+      <!--{% if "Exist" in message[1]: %}-->
+          <!--<div class="alert alert-warning">-->
+          <!--<strong>{{ message[1] }}</strong>-->
+          <!--</div>-->
+      <!--{% endif %}-->
+  <!--{% endfor %}-->
+      <!--{% endif %}-->
+  <!--{% endwith %}-->
+
+</div>
+
+</body>
+</html>
