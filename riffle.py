@@ -15,6 +15,7 @@ import time
 import argparse
 import pickle
 import psycopg2
+import xgboost as xgb
 import numpy as np
 from textblob import TextBlob
 from yelpapi import YelpAPI
@@ -172,13 +173,19 @@ class Model(object):
     """
     def __init__(self):
         self.vect_rev = []
+        self.dmat = []
+        self.probs = []
         self.preds = []
 
-        with open('model/forest_100k_eng.pkl', 'rb') as f:
-            self.forest = pickle.load(f)
+        # with open('model/forest_200k_eng.pkl', 'rb') as f:
+        #     self.forest = pickle.load(f)
 
-        with open('model/vectorizer_100k_eng.pkl', 'rb') as f:
+        with open('model/vectorizer_200k_eng.pkl', 'rb') as f:
             self.vectorizer = pickle.load(f)
+
+        self.bst = xgb.Booster({'nthread': 4})
+        self.bst.load_model('model/bst_200k.model')
+
 
     def predict(self, reviews):
         """
@@ -189,7 +196,11 @@ class Model(object):
         Side-Effects: Create list of new review ratings
         """
         self.vect_rev = self.vectorizer.transform(reviews)
-        self.preds = self.forest.predict(self.vect_rev)
+        self.dmat = xgb.DMatrix(self.vect_rev)
+        self.probs = self.bst.predict(self.dmat)
+
+        # Get tough on reviews by requiring 0.6 probability threshold
+        self.preds = 1 * (self.probs > 0.6)
 
 
 class Nlp(object):
@@ -198,8 +209,8 @@ class Nlp(object):
      and apply weightings to the reviews accordingly
     """
     def __init__(self, reviews, stars, preds, name, country, city,
-                 pols_bar=(0.6, -0.6), subj_bar=0.6, wc_bar=35, pols_pen=0.6,
-                 subj_pen=0.6, wc_pen=0.25):
+                 pols_bar=(0.6, -0.6), subj_bar=0.6, wc_bar=35, pols_pen=0.65,
+                 subj_pen=0.65, wc_pen=0.25):
 
         """
         Penalize reviews based on sentiment analysis and word count
@@ -277,7 +288,7 @@ def run(bus_id=args.bus_id):
 
 
 def update_db(bus_id=args.bus_id):
-    """ Run a Business ID through the model """
+    """ Run a Business ID through the model and insert into SQL """
     # Instantiate the SQL class for the business data we will be pulling
     sql = Sql(bus_id)
 
@@ -296,13 +307,13 @@ def update_db(bus_id=args.bus_id):
             break
         except ValueError:
             pass
-        except YelpAPIError:
+        except YelpAPI.YelpAPIError:
             return
 
     #  Grab review text from SQL database
     sql.pull_reviews()
 
-    # Use our trained Random Forests model and TFIDF vectorizer
+    # Use our trained XGBoost Classifier and TFIDF vectorizer
     #  to determine whether each review is "Favorable" or "Unfavorable"
     model.predict(sql.reviews)
 

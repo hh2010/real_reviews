@@ -1,57 +1,79 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-    <head>
-        <title>Riffle</title>
-       <link rel="stylesheet" media="screen" href ="static/css/bootstrap.min.css">
-       <link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
-       <link rel="stylesheet" href="static/css/hh.css">
-       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
-    </head>
-    <body>
+<head>
+  <title>Riffle</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="static/css/hh.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
 
 
 <div class="container">
+  <center>
+    <figure>
+      <img src="static/img/riffle.png" , style="padding-top: 25px; padding-bottom: 10px;">
+      <figcaption><b>Digging Through Business Reviews So You Don't Have To</b></figcaption>
+    </figure>
 
-  <h2>Riffle</h2>
-  <form action="" method="post" role="form">
-    {{ form.csrf }}
-    <div class="form-group">
-      <label for="business"><h3><b>Type the Business ID:</h3></b></label>
-      <br>
-      <input type="text" class="form-control" id="business" name="business" value="JyxHvtj-syke7m9rbza7mA">
-    </div>
-    <button type="submit" name="btn" class="btn btn-success">Rate!</button>
-  </form>
-  <h2><u>Yelp Business Analysis</u></h2>
-  <h3>{{data['name']}}</h3>
-  <h3>{{data['city']}}</h3>
-  <h3>{{data['country']}}</h3>
-  <h3>New Rating: {{data['new_rating']}}%</h3>
-    <progress class='progress' value={{data['new_rating']}} max="100"></progress>
-
-  <h3>Old Rating: {{data['old_rating']}}%</h3>
-    <progress class='progress' value={{data['old_rating']}} max="100"></progress>
-
-  <!--{% with messages = get_flashed_messages(with_categories=true) %}-->
-      <!--{% if messages %}-->
-
-  <!--{% for message in messages %}-->
-      <!--{% if "Exist" not in message[1]: %}-->
-          <!--<div class="alert alert-info">-->
-          <!--<strong>{{ message[1] }}</strong>-->
-          <!--</div>-->
-      <!--{% endif %}-->
-
-      <!--{% if "Exist" in message[1]: %}-->
-          <!--<div class="alert alert-warning">-->
-          <!--<strong>{{ message[1] }}</strong>-->
-          <!--</div>-->
-      <!--{% endif %}-->
-  <!--{% endfor %}-->
-      <!--{% endif %}-->
-  <!--{% endwith %}-->
-
+    <br>
+    <form action="" method="post" role="form">
+      {{ form.csrf }}
+      <div class="form-group">
+        <h4><b>Enter the Business ID:</h4></b>
+        <input type="text" class="form-control" id="business" name="business"
+               value="JyxHvtj-syke7m9rbza7mA" style="width:600px;">
+      </div>
+      <button type="submit" name="btn" class="btn btn-success"
+              style="width: 200px;">Rate!
+      </button>
+    </form>
+    <font size="4pt">
+        <br>
+        <table class="table table-bordered text-center table-sm" style="width: 80%;">
+          <thead class="thead-default">
+          <tr>
+            <th class="text-center" class="align-middle">Business Name</th>
+            <th class="text-center" class="align-middle">City</th>
+            <th class="text-center" class="align-middle">Country</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="align-middle"><b>{{data['name']}}</b></td>
+            <td class="align-middle">{{data['city']}}</td>
+            <td class="align-middle">{{data['country']}}</td>
+          </tr>
+          <tr>
+        <td class="align-middle">
+          <b>Riffle Rating</b>
+        </td>
+        <td colspan="2" class="align-middle">
+          <div class="progress">
+            <div class="progress-bar red" role="progressbar" aria-valuenow={{data['new_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data['new_rating']}}%; height: 25px;">{{data['new_rating']}}%</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="align-middle">
+          <b>Yelp Rating</b>
+        </td>
+        <td colspan="2" class="align-middle">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow={{data['old_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data['old_rating']}}%; height: 25px;">{{data['old_rating']}}%</div>
+          </div>
+        </td>
+      </tr>
+          </tbody>
+      </table>
+    </font>
+  </center>
 </div>
+
+
+
 
 </body>
 </html>
