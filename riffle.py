@@ -11,6 +11,7 @@ a new adjusted rating for the business.
 # Can we look up and compare the text of the reviews?
 
 import sys
+import json
 import time
 import argparse
 import pickle
@@ -46,6 +47,7 @@ class Sql(object):
         self.cur = ""
         self.query = ""
         self.tups = ()
+        self.names = ()
         self.reviews = []
         self.stars = []
         self.conn = ""
@@ -127,6 +129,23 @@ class Sql(object):
         for rev, star in self.tups:
             self.reviews.append(rev)
             self.stars.append(star)
+
+    def pull_names(self):
+        """
+        Input: None
+        Output: Tuple of Business Names and IDs from the database
+        Side-Effects: None
+        """
+        # Note: This only pulls Las Vegas businesses since that's what we are
+        #        focusing on for demo
+        self.conn = psycopg2.connect(self.conn_string)
+        self.cur = self.conn.cursor()
+        self.cur.execute("""
+                         SELECT DISTINCT on (name) name, business_id FROM yelp_stored
+                         WHERE city = 'Las Vegas' ORDER BY name asc;
+                         """)
+        self.names = self.cur.fetchall()
+        self.conn.close()
 
 
 class Yelp(object):
@@ -220,10 +239,20 @@ class Nlp(object):
         Side-Effects: Create lists of penalties for reviews
         """
 
-        # Inherit the attributes from Yelp class
+        # Assign the attributes from Yelp class
         self.name = name
         self.country = country
         self.city = city
+
+        # Assign the attributes that will be used for examples of
+        #  reviews that have "changed" due to the model as per the
+        #  ('examples' function) below
+
+        self.reviews = []
+        self.stars = []
+        self.revs_2 = []
+        self.revs_3 = []
+        self.revs_4 = []
 
         # Calculate the penalties
         self.sentiments = [TextBlob(i).sentiment for i in reviews]
@@ -241,6 +270,26 @@ class Nlp(object):
         self.pred_wts = [i*j for i, j in zip(preds, self.avg_wts)]
         self.stars_avg = sum(map(float, stars))/len(stars)
         self.new_rating = sum(map(float, self.pred_wts))/float(sum(self.avg_wts))
+
+    def examples(self, reviews, stars, probs):
+        """
+        Determine which 2-4 star reviews had changed from positive
+            to negative or vice versa
+        Input: List of review text(from SQL) and corresponding Yelp stars
+        Output: None
+        Side-Effects: Create lists of reviews and their corresponding XGBoost
+                        prediction probability)
+        """
+        self.reviews = reviews
+        self.stars = stars
+
+        for i in range(len(self.stars)):
+            if stars[i] == 2:
+                self.revs_2.append([self.reviews[i], probs[i]])
+            if stars[i] == 3:
+                self.revs_3.append([self.reviews[i], probs[i]])
+            if stars[i] == 4:
+                self.revs_4.append([self.reviews[i], probs[i]])
 
     def output(self):
         """
@@ -275,11 +324,13 @@ def run(bus_id=args.bus_id):
     except:
         print "Business ID Does Not Exist! Exiting..."
         return
+    sql.pull_reviews()
     model.predict(sql.reviews)
     end_model = time.time()
     start_nlp = time.time()
-    Nlp(sql.reviews, sql.stars, model.preds, bus_info.name,
+    nlp = Nlp(sql.reviews, sql.stars, model.preds, bus_info.name,
         bus_info.country, bus_info.city)
+    nlp.examples(sql.reviews, sql.stars, model.probs)
     end_nlp = time.time()
     print "SQL Time: ", (end_sql - start_sql)
     print "Info Time: ", (end_info - start_info)

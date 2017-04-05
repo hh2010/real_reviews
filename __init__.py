@@ -13,28 +13,69 @@ with open('data/pvt.csv') as f:
         if l[0] == 'key':
             key = l[1]
 
+# Set up our list of Las Vegas Business IDs
+sql = riffle.Sql()
+sql.pull_names()
+bus_name_list = [x for x, y in sql.names]
+bus_id_list = [y for x, y in sql.names]
+vis = 0
+
+# Set up a default dictionary
+def_dict = {'business_id': 'Business ID', 'name': 'Business Name',
+            'city': 'City', 'country': 'Country', 'old_rating': 0,
+            'new_rating': 0, 'rev_count': 0, 'count_5': 0, 'count_4': 0,
+            'count_3': 0, 'count_2': 0, 'count_1': 0, 'fav_count': 0,
+            'unfav_count': 0, 'avg_wts': 0}
+
+www_dict1 = dict(def_dict)
+www_dict2 = dict(def_dict)
+
 # Configure the Flask app
 DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = key
 
+
 # Set up the default route
 @app.route("/", methods=['GET', 'POST'])
-def reviews():
+def reviews(names=bus_name_list, ids=bus_id_list):
     """
     Load the Riffle page and populate the variables used on the site
     """
+    global vis
+    global def_dict
+    global www_dict1
+    global www_dict2
+
     form = Form(request.form)
-    bus_id = request.form.get("business")
-    print bus_id
     try:
-        www_dict = bus_data(bus_id)
+        bus_name = request.form.get("business")
+        bus_id = ids[names.index(bus_name)]
+    except:
+        bus_name = 'Bellagio Hotel'
+        bus_id = ids[names.index(bus_name)]
+
+    # Pull the list of Business Names and IDs
+    try:
+        if vis % 2 == 0:
+            print "a"
+            www_dict1 = bus_data(bus_id)
+        else:
+            print "b"
+            www_dict2 = bus_data(bus_id)
     except:
         print "There was an error!"
-        www_dict = {}
-    return render_template('reviews.html', form=form, data=www_dict)
+        vis = 0
 
+    print bus_name
+    print vis
+    print www_dict1
+    print www_dict2
+
+    return render_template('reviews.html', form=form, data1=www_dict1,
+                           data2=www_dict2, bus_names=names,
+                           default_bus=bus_name, vis=vis)
 
 def bus_data(bus_id):
     """
@@ -43,12 +84,10 @@ def bus_data(bus_id):
     Output: Dictionary
     Side-Effects: Updated SQL database
     """
-    # Set up a default dictionary
-    bus_dict = {'business_id': 'Business ID', 'name': 'Business Name',
-                'city': 'City', 'country': 'Country', 'old_rating': 0,
-                'new_rating': 0,  'rev_count': 0, 'count_5': 0, 'count_4': 0,
-                'count_3': 0, 'count_2': 0, 'count_1': 0, 'fav_count': 0,
-                'unfav_count': 0, 'avg_wts': 0}
+    global vis
+    global def_dict
+
+    bus_dict = dict(def_dict)
 
     # Instantiate the SQL class for the business data we will be pulling
     sql = riffle.Sql(bus_id)
@@ -59,6 +98,16 @@ def bus_data(bus_id):
         pass
     else:
         sql_tup = sql.check()[0]
+
+        # If we render a form for a new business, then increase
+        #  the visibility variable to allow viewing of multiple
+        #  business ratings
+        if bus_dict['name'] == sql_tup[1]:
+            pass
+        else:
+            vis += 1
+            print vis
+
         bus_dict['business_id'] = sql_tup[0]
         bus_dict['name'] = sql_tup[1]
         bus_dict['city'] = sql_tup[2]
@@ -117,10 +166,12 @@ def bus_data(bus_id):
                rev_count, count_5, count_4, count_3, count_2, count_1,
                fav_count, unfav_count, avg_wts)
     sql.insert(bus_tup)
-    for key in bus_dict.keys():
+    for key in bus_dict.keys()[:-1]:
         x = 0
         bus_dict[key] = bus_tup[x]
         x += 1
+    vis += 1
+    print vis
     return bus_dict
 
 if __name__ == "__main__":

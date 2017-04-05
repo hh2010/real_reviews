@@ -14,24 +14,31 @@
 <div class="container">
   <center>
     <figure>
-      <img src="static/img/riffle.png" , style="padding-top: 25px; padding-bottom: 10px;">
-      <figcaption><b>Digging Through Business Reviews So You Don't Have To</b></figcaption>
+      <img src="static/img/riffle.png", style="padding-top: 25px; padding-bottom: 10px;">
+      <figcaption><b>Skimming Through Business Reviews So You Don't Have To</b></figcaption>
     </figure>
 
     <br>
     <form action="" method="post" role="form">
       {{ form.csrf }}
+        <h4><b>Las Vegas Businesses on Yelp</h4></b>
       <div class="form-group">
-        <h4><b>Enter the Business ID:</h4></b>
-        <input type="text" class="form-control" id="business" name="business"
-               value="JyxHvtj-syke7m9rbza7mA" style="width:600px;">
+        <select name="business" id="business" class="form-control" style="width:600px;">
+        {% for x in bus_names %}
+        <option value="{{ x }}"{% if x == default_bus %} SELECTED{% endif %}>{{ x }}</option>
+        {% endfor %}
+        </select>
       </div>
       <button type="submit" name="btn" class="btn btn-success"
               style="width: 200px;">Rate!
       </button>
     </form>
+    <br>
+
     <font size="4pt">
         <br>
+      {% if vis <= 2 %}<div style="display:none">{% endif %}
+      {% if vis > 2 %}<div>{% endif %}
         <table class="table table-bordered text-center table-sm" style="width: 80%;">
           <thead class="thead-default">
           <tr>
@@ -42,9 +49,9 @@
           </thead>
           <tbody>
           <tr>
-            <td class="align-middle"><b>{{data['name']}}</b></td>
-            <td class="align-middle">{{data['city']}}</td>
-            <td class="align-middle">{{data['country']}}</td>
+            <td class="align-middle"><b>{{data1['name']}}</b></td>
+            <td class="align-middle">{{data1['city']}}</td>
+            <td class="align-middle">{{data1['country']}}</td>
           </tr>
           <tr>
         <td class="align-middle">
@@ -52,7 +59,7 @@
         </td>
         <td colspan="2" class="align-middle">
           <div class="progress">
-            <div class="progress-bar red" role="progressbar" aria-valuenow={{data['new_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data['new_rating']}}%; height: 25px;">{{data['new_rating']}}%</div>
+            <div class="progress-bar red" role="progressbar" aria-valuenow={{data1['new_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data1['new_rating']}}%; height: 25px;">{{data1['new_rating']}}%</div>
           </div>
         </td>
       </tr>
@@ -62,18 +69,58 @@
         </td>
         <td colspan="2" class="align-middle">
           <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow={{data['old_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data['old_rating']}}%; height: 25px;">{{data['old_rating']}}%</div>
+            <div class="progress-bar" role="progressbar" aria-valuenow={{data1['old_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data1['old_rating']}}%; height: 25px;">{{data1['old_rating']}}%</div>
           </div>
         </td>
       </tr>
           </tbody>
       </table>
+    </div>
+
+  <br>
+      {% if vis <= 1 %}<div style="display:none">{% endif %}
+      {% if vis > 1 %}<div>{% endif %}
+        <table class="table table-bordered text-center table-sm" style="width: 80%;">
+          <thead class="thead-default">
+          <tr>
+            <th class="text-center" class="align-middle">Business Name</th>
+            <th class="text-center" class="align-middle">City</th>
+            <th class="text-center" class="align-middle">Country</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="align-middle"><b>{{data2['name']}}</b></td>
+            <td class="align-middle">{{data2['city']}}</td>
+            <td class="align-middle">{{data2['country']}}</td>
+          </tr>
+          <tr>
+        <td class="align-middle">
+          <b>Riffle Rating</b>
+        </td>
+        <td colspan="2" class="align-middle">
+          <div class="progress">
+            <div class="progress-bar red" role="progressbar" aria-valuenow={{data2['new_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data2['new_rating']}}%; height: 25px;">{{data2['new_rating']}}%</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="align-middle">
+          <b>Yelp Rating</b>
+        </td>
+        <td colspan="2" class="align-middle">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow={{data2['old_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data2['old_rating']}}%; height: 25px;">{{data2['old_rating']}}%</div>
+          </div>
+        </td>
+      </tr>
+          </tbody>
+      </table>
+    </div>
+
     </font>
   </center>
 </div>
-
-
-
 
 </body>
 </html>
