@@ -19,10 +19,10 @@ you.
 Just go to the website [TBA]()
 
 Lot of modules needed and private settings
--xgboost
--yelpapi
--flask with secret key
--
+xgboost
+yelpapi
+flask with secret key
+
 
 ## Contact
 If you have any questions or comments on this project, you can find me below:

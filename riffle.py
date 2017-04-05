@@ -193,7 +193,7 @@ class Yelp(object):
 
 class Model(object):
     """
-    Load the sklearn review evaluatoin models
+    Load the sklearn review evaluation models
     """
     def __init__(self):
         self.vect_rev = []
@@ -310,13 +310,10 @@ class Nlp(object):
 
 
 # Script to test results
-# Load the model before running function (most time consuming)
-
-model = Model()
-
 
 def run(bus_id=def_id):
     """ Run a Business ID through the model and output some results"""
+    model = Model()
     start_sql = time.time()
     sql = Sql(bus_id)
     end_sql = time.time()
