@@ -10,8 +10,8 @@ a new adjusted rating for the business.
 # Add function to compare old score to new (which ones flipped)
 # Can we look up and compare the text of the reviews?
 
+import os
 import sys
-import json
 import time
 import argparse
 import pickle
@@ -21,6 +21,9 @@ import numpy as np
 from textblob import TextBlob
 from yelpapi import YelpAPI
 
+# Set current working directory
+cwd = os.path.dirname(__file__)
+
 # Set default encoding
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -28,7 +31,7 @@ sys.setdefaultencoding('utf8')
 # Set up the Argument Parser to grab Business ID number
 parser = argparse.ArgumentParser()
 parser.add_argument('--bus_id', default='JyxHvtj-syke7m9rbza7mA')
-parser.add_argument('--input', default='data/bus_id.csv')
+parser.add_argument('--input', default=os.path.join(cwd, 'data/bus_id.csv'))
 args = parser.parse_args()
 
 # Create our classes to be used in this file or exported to Flask app
@@ -52,7 +55,7 @@ class Sql(object):
         self.stars = []
         self.conn = ""
 
-        with open('data/pvt.csv') as f:
+        with open(os.path.join(cwd, 'data/pvt.csv')) as f:
             for line in f:
                 l = line.strip().split(',')
                 if l[0] == 'sql_user':
@@ -161,7 +164,7 @@ class Yelp(object):
         self.city = ""
         self.country = ""
 
-        with open('data/pvt.csv') as f:
+        with open(os.path.join(cwd, 'data/pvt.csv')) as f:
             for line in f:
                 l = line.strip().split(',')
                 if l[0] == "yelp_id":
@@ -199,12 +202,11 @@ class Model(object):
         # with open('model/forest_200k_eng.pkl', 'rb') as f:
         #     self.forest = pickle.load(f)
 
-        with open('model/vectorizer_200k_eng.pkl', 'rb') as f:
+        with open(os.path.join(cwd, 'model/vectorizer_200k_eng.pkl'), 'rb') as f:
             self.vectorizer = pickle.load(f)
 
         self.bst = xgb.Booster({'nthread': 4})
-        self.bst.load_model('model/bst_200k.model')
-
+        self.bst.load_model(os.path.join(cwd, 'model/bst_200k.model'))
 
     def predict(self, reviews):
         """
@@ -329,7 +331,7 @@ def run(bus_id=args.bus_id):
     end_model = time.time()
     start_nlp = time.time()
     nlp = Nlp(sql.reviews, sql.stars, model.preds, bus_info.name,
-        bus_info.country, bus_info.city)
+              bus_info.country, bus_info.city)
     nlp.examples(sql.reviews, sql.stars, model.probs)
     end_nlp = time.time()
     print "SQL Time: ", (end_sql - start_sql)

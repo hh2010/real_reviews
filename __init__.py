@@ -1,13 +1,18 @@
 """
 Flask App to render the Riffle website
 """
+import os
 import riffle
 from flask import Flask, render_template, request
 from wtforms import Form
 
+
+# Set current working directory
+cwd = os.path.dirname(__file__)
+
 # Get secret key
 key = ""
-with open('data/pvt.csv') as f:
+with open(os.path.join(cwd, 'data/pvt.csv')) as f:
     for line in f:
         l = line.strip().split(',')
         if l[0] == 'key':
