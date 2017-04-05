@@ -7,9 +7,6 @@ Specify a Business ID number to calculate
 a new adjusted rating for the business.
 """
 
-# Add function to compare old score to new (which ones flipped)
-# Can we look up and compare the text of the reviews?
-
 import os
 import sys
 import time
@@ -29,19 +26,23 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 # Set up the Argument Parser to grab Business ID number
-parser = argparse.ArgumentParser()
-parser.add_argument('--bus_id', default='JyxHvtj-syke7m9rbza7mA')
-parser.add_argument('--input', default=os.path.join(cwd, 'data/bus_id.csv'))
-args = parser.parse_args()
+# Script does not currently have command-line support
+#  but could be easily added if needed
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--bus_id', default='JyxHvtj-syke7m9rbza7mA')
+    parser.add_argument('--input', default=os.path.join(cwd, 'data/bus_id.csv'))
+    args = parser.parse_args()
+    def_id = args.bus_id
+else:
+    def_id = 'JyxHvtj-syke7m9rbza7mA'
 
 # Create our classes to be used in this file or exported to Flask app
-
-
 class Sql(object):
     """
     Connection to Postgres server
     """
-    def __init__(self, bus_id=args.bus_id):
+    def __init__(self, bus_id=def_id):
         self.bus_id = bus_id
         self.sql_user = ""
         self.sql_pass = ""
@@ -55,6 +56,7 @@ class Sql(object):
         self.stars = []
         self.conn = ""
 
+        # Get passwords from private CSV file
         with open(os.path.join(cwd, 'data/pvt.csv')) as f:
             for line in f:
                 l = line.strip().split(',')
@@ -84,7 +86,7 @@ class Sql(object):
         Side-Effects: None
         """
         self.conn = psycopg2.connect(self.conn_string)
-        self.cur = self.conn.cursor()
+        self.cur = self.conn.cursor("rifflecursor")
         self.cur.execute("""
                          SELECT * FROM yelp_stored WHERE business_id = %s;
                          """, (self.bus_id,))
@@ -103,7 +105,7 @@ class Sql(object):
         Side-Effects: Updated SQL database
         """
         self.conn = psycopg2.connect(self.conn_string)
-        self.cur = self.conn.cursor()
+        self.cur = self.conn.cursor("rifflecursor")
         self.query = """
                 INSERT INTO yelp_stored (business_id, name, city, country,
                 old_rating, new_rating, rev_count, count_5, count_4, count_3,
@@ -122,7 +124,7 @@ class Sql(object):
         Side-Effects: Update list of Yelp review text and star ratings
         """
         self.conn = psycopg2.connect(self.conn_string)
-        self.cur = self.conn.cursor()
+        self.cur = self.conn.cursor("rifflecursor")
         self.cur.execute("""
                          SELECT review, stars FROM yelp WHERE business_id = %s;
                          """, (self.bus_id,))
@@ -142,7 +144,7 @@ class Sql(object):
         # Note: This only pulls Las Vegas businesses since that's what we are
         #        focusing on for demo
         self.conn = psycopg2.connect(self.conn_string)
-        self.cur = self.conn.cursor()
+        self.cur = self.conn.cursor("rifflecursor")
         self.cur.execute("""
                          SELECT DISTINCT on (name) name, business_id FROM yelp_stored
                          WHERE city = 'Las Vegas' ORDER BY name asc;
@@ -155,7 +157,7 @@ class Yelp(object):
     """
     Connect to Yelp API and pull information
     """
-    def __init__(self, bus_id=args.bus_id):
+    def __init__(self, bus_id=def_id):
         self.bus_id = bus_id
         self.yelp_id = ""
         self.yelp_secret = ""
@@ -313,7 +315,7 @@ class Nlp(object):
 model = Model()
 
 
-def run(bus_id=args.bus_id):
+def run(bus_id=def_id):
     """ Run a Business ID through the model and output some results"""
     start_sql = time.time()
     sql = Sql(bus_id)
@@ -340,7 +342,7 @@ def run(bus_id=args.bus_id):
     print "NLP Time: ", (end_nlp - start_nlp)
 
 
-def update_db(bus_id=args.bus_id):
+def update_db(bus_id=def_id):
     """ Run a Business ID through the model and insert into SQL """
     # Instantiate the SQL class for the business data we will be pulling
     sql = Sql(bus_id)

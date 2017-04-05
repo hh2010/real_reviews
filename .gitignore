@@ -4,4 +4,6 @@
 *.idea
 *.pyc
 *.ipynb_checkpoints
+*.mov
 data/pvt.csv
+old/

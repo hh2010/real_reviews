@@ -6,11 +6,10 @@ import riffle
 from flask import Flask, render_template, request
 from wtforms import Form
 
-
 # Set current working directory
 cwd = os.path.dirname(__file__)
 
-# Get secret key
+# Get secret key from private CSV file
 key = ""
 with open(os.path.join(cwd, 'data/pvt.csv')) as f:
     for line in f:
@@ -36,11 +35,10 @@ www_dict1 = dict(def_dict)
 www_dict2 = dict(def_dict)
 
 # Configure the Flask app
-DEBUG = True
+# DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = key
-
 
 # Set up the default route
 @app.route("/", methods=['GET', 'POST'])
@@ -54,6 +52,7 @@ def reviews(names=bus_name_list, ids=bus_id_list):
     global www_dict2
 
     form = Form(request.form)
+
     try:
         bus_name = request.form.get("business")
         bus_id = ids[names.index(bus_name)]
@@ -64,19 +63,14 @@ def reviews(names=bus_name_list, ids=bus_id_list):
     # Pull the list of Business Names and IDs
     try:
         if vis % 2 == 0:
-            print "a"
+            www_dict2 = dict(www_dict1)
             www_dict1 = bus_data(bus_id)
         else:
-            print "b"
-            www_dict2 = bus_data(bus_id)
+            www_dict2 = dict(www_dict1)
+            www_dict1 = bus_data(bus_id)
     except:
         print "There was an error!"
         vis = 0
-
-    print bus_name
-    print vis
-    print www_dict1
-    print www_dict2
 
     return render_template('reviews.html', form=form, data1=www_dict1,
                            data2=www_dict2, bus_names=names,
@@ -111,7 +105,6 @@ def bus_data(bus_id):
             pass
         else:
             vis += 1
-            print vis
 
         bus_dict['business_id'] = sql_tup[0]
         bus_dict['name'] = sql_tup[1]
@@ -176,7 +169,6 @@ def bus_data(bus_id):
         bus_dict[key] = bus_tup[x]
         x += 1
     vis += 1
-    print vis
     return bus_dict
 
 if __name__ == "__main__":
