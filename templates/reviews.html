@@ -7,9 +7,16 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="static/css/hh.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $("select").select2();
+    });//document ready
+  </script>
 </head>
 <body>
-
 
 <div class="container" align="center">
     <figure>
@@ -20,8 +27,9 @@
     <br>
     <form method="post">
       {{ form.csrf }}
-      <h4><b>Las Vegas Businesses on Yelp</b></h4>
+      <h3 style="font-family: Arial Rounded MT Bold;"><b>Choose a Spot in Las Vegas:</b></h3>
       <div class="form-group">
+        <br>
         <select name="business" id="business" class="form-control" style="width:600px;">
         {% for x in bus_names %}
         <option value="{{ x }}"{% if x == default_bus %} SELECTED{% endif %}>{{ x }}</option>
@@ -29,27 +37,47 @@
         </select>
       </div>
       <button type="submit" name="btn" class="btn btn-success"
-              style="width: 200px;">Rate!
-      </button>
+              style="width: 200px;">Rate!</button>
     </form>
     <br>
-    <br>
-      {% if vis <= 2 %}<div style="display:none">{% endif %}
-      {% if vis > 2 %}<div>{% endif %}
+    {% if session['vis'] > 1 %}
+    <div style="font-size: xx-large;">
+    <b>Riffle Score: </b>
+    {% if data['delta'] > 0 %}
+      <font color="#228b22"><b>{{data['delta']}}</b></font></div>
+    <div style="font-size:large;">
+      <br>
+      Based on this <font color="#8b0000"><b>Riffle</b></font> score, <b>{{data['name']}}</b> is probably <font color="#228b22"><b>better</b></font> than Yelp says.
+    </div>
+    {% elif data['delta'] < -6 %}
+      <font color="#8b0000"><b>{{data['delta']}}</b></font></div>
+      <br>
+    <div style="font-size:large;">
+      Based on this <font color="#8b0000"><b>Riffle</b></font> score, <b>{{data['name']}}</b> is probably <font color="#8b0000"><b>not as good</b></font> as Yelp says.
+    </div>
+    {% else %}
+        <font color="0B73DF"><b>{{data['delta']}}</b></font></div>
+      <div style="font-size:large;">
+      <br>
+        Based on this <font color="#8b0000"><b>Riffle</b></font> score, <b>{{data['name']}}</b> is probably <font color="0B73DF"><b>about as good</b></font> as Yelp says.
+        </div>
+    {% endif %}
+    {% endif %}
+      {% if vis <= 1 %}<div style="display:none">{% endif %}
+      {% if vis > 1 %}<div>{% endif %}
         <font size="4pt">
+          <br>
         <table class="table table-bordered text-center table-sm" style="width: 80%;">
           <thead class="thead-default">
           <tr>
             <th class="text-center">Business Name</th>
             <th class="text-center align-middle">City</th>
-            <th class="text-center align-middle">Country</th>
           </tr>
           </thead>
           <tbody>
           <tr>
-            <td class="align-middle" style="width: 50%;"><b>{{data1['name']}}</b></td>
-            <td class="align-middle" style="width: 50%;">{{data1['city']}}</td>
-            <td class="align-middle" style="width: 50%;">{{data1['country']}}</td>
+            <td class="align-middle" style="width: 50%;"><b>{{data['name']}}</b></td>
+            <td class="align-middle" style="width: 50%;">{{data['city']}}</td>
           </tr>
           <tr>
         <td class="align-middle">
@@ -57,7 +85,7 @@
         </td>
         <td colspan="2" class="align-middle">
           <div class="progress">
-            <div class="progress-bar red" role="progressbar" aria-valuenow={{data1['new_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data1['new_rating']}}%; height: 25px;">{{data1['new_rating']}}%</div>
+            <div class="progress-bar red" role="progressbar" aria-valuenow={{data['new_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data['new_rating']}}%; height: 35px;">{{data['new_rating']}}%</div>
           </div>
         </td>
       </tr>
@@ -67,7 +95,7 @@
         </td>
         <td colspan="2" class="align-middle">
           <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow={{data1['old_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data1['old_rating']}}%; height: 25px;">{{data1['old_rating']}}%</div>
+            <div class="progress-bar" role="progressbar" aria-valuenow={{data['old_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data['old_rating']}}%; height: 35px;">{{data['old_rating']}}%</div>
           </div>
         </td>
       </tr>
@@ -75,51 +103,6 @@
       </table>
         </font>
     </div>
-
-  <br>
-      {% if vis <= 1 %}<div style="display:none">{% endif %}
-      {% if vis > 1 %}<div>{% endif %}
-      <font size="4pt">
-        <table class="table table-bordered text-center table-sm" style="width: 80%;">
-          <thead class="thead-default">
-          <tr>
-            <th class="text-center align-middle">Business Name</th>
-            <th class="text-center align-middle">City</th>
-            <th class="text-center align-middle">Country</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td class="align-middle" style="width: 50%;"><b>{{data2['name']}}</b></td>
-            <td class="align-middle" style="width: 50%;">{{data2['city']}}</td>
-            <td class="align-middle" style="width: 50%;">{{data2['country']}}</td>
-          </tr>
-          <tr>
-        <td class="align-middle">
-          <b>Riffle Rating</b>
-        </td>
-        <td colspan="2" class="align-middle">
-          <div class="progress">
-            <div class="progress-bar red" role="progressbar" aria-valuenow={{data2['new_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data2['new_rating']}}%; height: 25px;">{{data2['new_rating']}}%</div>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="align-middle">
-          <b>Yelp Rating</b>
-        </td>
-        <td colspan="2" class="align-middle">
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow={{data2['old_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data2['old_rating']}}%; height: 25px;">{{data2['old_rating']}}%</div>
-          </div>
-        </td>
-      </tr>
-          </tbody>
-      </table>
-      </font>
-    </div>
-
-    </font>
 </div>
 
 </body>

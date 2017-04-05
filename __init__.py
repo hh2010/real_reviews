@@ -28,7 +28,7 @@ def_dict = {'business_id': 'Business ID', 'name': 'Business Name',
             'city': 'City', 'country': 'Country', 'old_rating': 0,
             'new_rating': 0, 'rev_count': 0, 'count_5': 0, 'count_4': 0,
             'count_3': 0, 'count_2': 0, 'count_1': 0, 'fav_count': 0,
-            'unfav_count': 0, 'avg_wts': 0}
+            'unfav_count': 0, 'avg_wts': 0, 'delta': 0}
 
 # Initialize session variables
 def session_init():
@@ -40,19 +40,12 @@ def session_init():
     except KeyError:
         session['vis'] = 0
     try:
-        if session['www_dict1']:
+        if session['www_dict']:
             pass
         else:
-            session['www_dict1'] = dict(def_dict)
+            session['www_dict'] = dict(def_dict)
     except KeyError:
-        session['www_dict1'] = dict(def_dict)
-    try:
-        if session['www_dict2']:
-            pass
-        else:
-            session['www_dict2'] = dict(def_dict)
-    except KeyError:
-        session['www_dict2'] = dict(def_dict)
+        session['www_dict'] = dict(def_dict)
 
 # Configure the Flask app
 DEBUG = True
@@ -79,15 +72,14 @@ def reviews(names=bus_name_list, ids=bus_id_list):
 
     # Pull the list of Business Names and IDs
     try:
-        session['www_dict2'] = dict(session['www_dict1'])
-        session['www_dict1'] = bus_data(bus_id)
+        session['www_dict'] = bus_data(bus_id)
     except:
         print "There was an error!"
         session['vis'] = 0
 
-    return render_template('reviews.html', form=form, data1=session['www_dict1'],
-                           data2=session['www_dict2'], bus_names=names,
-                           default_bus=bus_name, vis=session['vis'])
+    return render_template('reviews.html', form=form, data=session['www_dict'],
+                           bus_names=names, default_bus=bus_name,
+                           vis=session['vis'])
 
 def bus_data(bus_id):
     """
@@ -134,6 +126,7 @@ def bus_data(bus_id):
         bus_dict['fav_count'] = sql_tup[12]
         bus_dict['unfav_count'] = sql_tup[12]
         bus_dict['avg_wts'] = sql_tup[13]
+        bus_dict['delta'] = (bus_dict['new_rating'] - bus_dict['old_rating'])
         return bus_dict
 
     # Instantiate the XGBoost model
