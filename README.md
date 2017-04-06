@@ -20,14 +20,13 @@ the work for you.
 Check it out at [riffle.hasanhaq.com](http://riffle.hasanhaq.com)
 
 ## Usage
-1. You are in Vegas for a weekend and want steak, but all the top steakhouses are rated 4-5 stars. How do you decide?
+* You are in Vegas for a weekend and want steak, but all the top steakhouses are rated 4-5 stars. How do you decide?
   * [Best Steakhouses in Las Vegas](https://www.yelp.com/search?find_desc=Best+Steakhouse&find_loc=Las+Vegas%2C+NV)
-2. [Riffle it!](http://riffle.hasanhaq.com)
+* [Riffle it!](http://riffle.hasanhaq.com)
   * Choose the steakhouses you want to compare.
   * Riffle will analyze the Yelp reviews, make adjustments, and compare them for you.
 
-Currently only the top 10,000 Las Vegas locations (by number of Yelp reviews) are supported. If there
-is interest then I will add more locations.
+Currently only the top 10,000 Las Vegas locations (by number of Yelp reviews) are supported. If there is interest then I will add more locations.
 
 ## Methodology
 !['Riffle Methodology'](ppt/riffle_method.png)
@@ -40,7 +39,7 @@ or negative and spit out a percentage. No more 5 star craziness. Think
 [Rotten Tomatoes](http://www.rottentomatoes.com).
 
 Next, I penalize the weighting of each review based on subjectivity,
-polarity, and word count. I use [NLTK]() sentiment analysis during this
+polarity, and word count. I use [NLTK](http://www.nltk.org/) sentiment analysis during this
 process.
 
 Finally, I populated a [Postgresql](https://www.postgresql.org/) database, pushed it to the cloud, and built a
@@ -49,7 +48,7 @@ Finally, I populated a [Postgresql](https://www.postgresql.org/) database, pushe
 ## Supplemental Materials
 [Jupyter Notebook](riffle.ipynb)
 
-[Presentation](ppt/riffle.pptx)
+[Presentation](ppt/riffle.pdf)
 
 ## Contact
 If you have any questions or comments on this project, you can find me below:
