@@ -70,8 +70,7 @@ def reviews(names=bus_name_list, ids=bus_id_list):
         session['www_tups'] = bus_data(bus_ids)
 
     except:
-        # print "There was an error!"
-        raise
+        print "There was an error!"
         session['vis'] = 0
 
     print session['www_tups']
@@ -115,6 +114,7 @@ def bus_data(bus_ids):
                          sql_tup[4], sql_tup[5]-sql_tup[4], sql_tup[6]))
 
     tups = sorted(tups, key=lambda x: x[3], reverse=True)
+    session['vis'] += 1
     return tups
 
 if __name__ == "__main__":
