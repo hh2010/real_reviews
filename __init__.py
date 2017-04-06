@@ -41,7 +41,7 @@ def session_init():
         session['www_tups'] = ()
 
 # Configure the Flask app
-DEBUG = True
+# DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = key
