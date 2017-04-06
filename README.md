@@ -17,14 +17,17 @@ pick out those features that determine quality reviews.
 Don't rely on 5 star ratings to make important decisions. Let **Riffle** do
 the work for you.
 
+Check it out at [riffle.hasanhaq.com](http://riffle.hasanhaq.com)
+
 ## Usage
-Just go to the website [riffle.hasanhaq.com](http://riffle.hasanhaq.com)
-and pick the spots you want to Riffle.
+1. You are in Vegas for a weekend and want steak, but all the top steakhouses are rated 4-5 stars. How do you decide?
+  * [Best Steakhouses in Las Vegas](https://www.yelp.com/search?find_desc=Best+Steakhouse&find_loc=Las+Vegas%2C+NV)
+2. [Riffle it!](http://riffle.hasanhaq.com)
+  * Choose the steakhouses you want to compare.
+* Riffle will analyze the Yelp reviews, make adjustments, and compare them for you.
 
 Currently only the top 10,000 Las Vegas locations (by number of Yelp reviews) are supported. If there
 is interest then I will add more locations.
-
-I also have a **demo** coming soon to illustrate the process.
 
 ## Methodology
 !['Riffle Methodology'](ppt/riffle_method.png)
