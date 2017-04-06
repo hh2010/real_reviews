@@ -6,7 +6,7 @@ these reviews are not written by professional critics. There is a lot of bias,
 inaccuracy and inconsistency in reviews.
 
 So as a **smart consumer**, what do you do when you have an important date coming
-up and need to choose between three trendy restaurants that are all rated 4.5 stars?
+up and need to choose between several trendy restaurants that are all rated 4.5 stars?
 You [riffle](https://www.google.com/search?hl=en&q=riffle+definition) through reviews and try to pick out key features that are important
 to you.
 
@@ -20,8 +20,7 @@ the work for you.
 Check it out at [riffle.hasanhaq.com](http://riffle.hasanhaq.com)
 
 ## Usage
-* You are in Vegas for a weekend and want steak, but all the top steakhouses are rated 4-5 stars. How do you decide?
-  * [Best Steakhouses in Las Vegas](https://www.yelp.com/search?find_desc=Best+Steakhouse&find_loc=Las+Vegas%2C+NV)
+* You are in Vegas for a weekend and want steak, but all the [top steakhouses](https://www.yelp.com/search?find_desc=Best+Steakhouse&find_loc=Las+Vegas%2C+NV) are rated 4-5 stars. How do you decide?
 * [Riffle it!](http://riffle.hasanhaq.com)
   * Choose the steakhouses you want to compare.
   * Riffle will analyze the Yelp reviews, make adjustments, and compare them for you.
