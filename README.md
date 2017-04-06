@@ -23,7 +23,8 @@ Check it out at [riffle.hasanhaq.com](http://riffle.hasanhaq.com)
 * You are in Vegas for a weekend and want steak, but all the [top steakhouses](https://www.yelp.com/search?find_desc=Best+Steakhouse&find_loc=Las+Vegas%2C+NV) are rated 4-5 stars. How do you decide?
 * [Riffle it!](http://riffle.hasanhaq.com)
   * Choose the steakhouses you want to compare.
-  * Riffle will analyze the Yelp reviews, make adjustments, and compare them for you.
+    * Try: Prime, Gallagher's, and THE Steak House
+* Riffle will analyze the Yelp reviews, make adjustments, and compare them for you.
 
 Currently only the top 10,000 Las Vegas locations (by number of Yelp reviews) are supported. If there is interest then I will add more locations.
 
