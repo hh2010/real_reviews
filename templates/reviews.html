@@ -30,7 +30,7 @@
       <h3 style="font-family: Arial Rounded MT Bold;"><b>Choose a Spot in Las Vegas:</b></h3>
       <div class="form-group">
         <br>
-        <select name="business" id="business" class="form-control" style="width: 50%">
+        <select name="business" id="business" class="form-control" style="width: 75%">
         {% for x in bus_names %}
         <option value="{{ x }}"{% if x == default_bus %} SELECTED{% endif %}>{{ x }}</option>
         {% endfor %}
