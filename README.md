@@ -24,7 +24,7 @@ Check it out at [riffle.hasanhaq.com](http://riffle.hasanhaq.com)
   * [Best Steakhouses in Las Vegas](https://www.yelp.com/search?find_desc=Best+Steakhouse&find_loc=Las+Vegas%2C+NV)
 2. [Riffle it!](http://riffle.hasanhaq.com)
   * Choose the steakhouses you want to compare.
-* Riffle will analyze the Yelp reviews, make adjustments, and compare them for you.
+  * Riffle will analyze the Yelp reviews, make adjustments, and compare them for you.
 
 Currently only the top 10,000 Las Vegas locations (by number of Yelp reviews) are supported. If there
 is interest then I will add more locations.
