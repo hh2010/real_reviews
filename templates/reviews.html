@@ -27,12 +27,12 @@
     <br>
     <form method="post">
       {{ form.csrf }}
-      <h3 style="font-family: Arial Rounded MT Bold;"><b>Choose a Spot in Las Vegas:</b></h3>
+      <h3 style="font-family: Arial Rounded MT Bold;"><b>Choose Locations in Las Vegas:</b></h3>
       <div class="form-group">
         <br>
-        <select name="business" id="business" class="form-control" style="width: 75%">
+        <select name="business" id="business" class="form-control" multiple="multiple" style="width: 75%">
         {% for x in bus_names %}
-        <option value="{{ x }}"{% if x == default_bus %} SELECTED{% endif %}>{{ x }}</option>
+        <option value="{{ x }}"{% if x in default_bus %} SELECTED{% endif %}>{{ x }}</option>
         {% endfor %}
         </select>
       </div>
@@ -40,70 +40,88 @@
               style="width: 200px;">Rate!</button>
     </form>
     <br>
-    {% if session['vis'] > 1 %}
-    <div style="font-size: xx-large;">
-    <b>Riffle Score: </b>
-    {% if data['delta'] > 0 %}
-      <font color="#228b22"><b>{{data['delta']}}</b></font></div>
-    <div style="font-size:large;">
-      <br>
-      Based on this <font color="#8b0000"><b>Riffle</b></font> score, <b>{{data['name']}}</b> is probably <font color="#228b22"><b>better</b></font> than Yelp says.
-    </div>
-    {% elif data['delta'] < -6 %}
-      <font color="#8b0000"><b>{{data['delta']}}</b></font></div>
-      <br>
-    <div style="font-size:large;">
-      Based on this <font color="#8b0000"><b>Riffle</b></font> score, <b>{{data['name']}}</b> is probably <font color="#8b0000"><b>not as good</b></font> as Yelp says.
-    </div>
-    {% else %}
-        <font color="0B73DF"><b>{{data['delta']}}</b></font></div>
-      <div style="font-size:large;">
-      <br>
-        Based on this <font color="#8b0000"><b>Riffle</b></font> score, <b>{{data['name']}}</b> is probably <font color="0B73DF"><b>about as good</b></font> as Yelp says.
-        </div>
-    {% endif %}
-    {% endif %}
+  <b>When all your dining options are rated the same on Yelp, see if Riffle Ratings can help make the decision easier.</b>
       {% if vis <= 1 %}<div style="display:none">{% endif %}
       {% if vis > 1 %}<div>{% endif %}
         <font size="4pt">
-          <br>
-        <table class="table table-bordered text-center table-sm" style="width: 80%;">
+        <table class="table table-bordered text-center table-sm" style="width: 80%; margin-top: 20px;">
           <thead class="thead-default">
           <tr>
             <th class="text-center">Business Name</th>
-            <th class="text-center align-middle">City</th>
+            <th class="text-center">Riffle Rating</th>
           </tr>
           </thead>
           <tbody>
+          {% if data[0] is defined %}
           <tr>
-            <td class="align-middle" style="width: 50%;"><b>{{data['name']}}</b></td>
-            <td class="align-middle" style="width: 50%;">{{data['city']}}</td>
+            <td class="align-middle" style="width: 50%; padding-top:10px; padding-bottom:10px;">{{data[0][1]}}</td>
+            <td class="align-middle">
+            <div class="progress">
+            <div class="progress-bar red" role="progressbar" aria-valuenow={{data[0][3]}} aria-valuemin="0" aria-valuemax="100" style="width: {{data[0][3]}}%; height: 30px;">{{data[0][3]}}</div>
+            </div>
+            </td>
           </tr>
+          {% endif %}
+          {% if data[1] is defined %}
+          <tr style>
+            <td class="align-middle" style="width: 50%; padding-top:10px; padding-bottom:10px;">{{data[1][1]}}</td>
+            <td class="align-middle">
+            <div class="progress">
+            <div class="progress-bar red" role="progressbar" aria-valuenow={{data[1][3]}} aria-valuemin="0" aria-valuemax="100" style="width: {{data[1][3]}}%; height: 30px;">{{data[1][3]}}</div>
+            </div>
+        </td>
+          </tr>
+          {% endif %}
+          {% if data[2] is defined %}
           <tr>
-        <td class="align-middle">
-          <b>Riffle Rating</b>
+            <td class="align-middle" style="width: 50%; padding-top:10px; padding-bottom:10px;">{{data[2][1]}}</td>
+            <td class="align-middle">
+            <div class="progress">
+            <div class="progress-bar red" role="progressbar" aria-valuenow={{data[1][3]}} aria-valuemin="0" aria-valuemax="100" style="width: {{data[2][3]}}%; height: 30px;">{{data[2][3]}}</div>
+            </div>
         </td>
-        <td colspan="2" class="align-middle">
-          <div class="progress">
-            <div class="progress-bar red" role="progressbar" aria-valuenow={{data['new_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data['new_rating']}}%; height: 35px;">{{data['new_rating']}}%</div>
-          </div>
+          </tr>
+          {% endif %}
+          {% if data[3] is defined %}
+          <tr>
+            <td class="align-middle" style="width: 50%; padding-top:10px; padding-bottom:10px;"><b>{{data[3][1]}}</b></td>
+            <td class="align-middle">
+            <div class="progress">
+            <div class="progress-bar red" role="progressbar" aria-valuenow={{data[1][3]}} aria-valuemin="0" aria-valuemax="100" style="width: {{data[3][3]}}%; height: 30px;">{{data[3][3]}}</div>
+            </div>
         </td>
-      </tr>
-      <tr>
-        <td class="align-middle">
-          <b>Yelp Rating</b>
+          </tr>
+          {% endif %}
+          {% if data[4] is defined %}
+            <td class="align-middle" style="width: 50%; padding-top:10px; padding-bottom:10px;"><b>{{data[4][1]}}</b></td>
+            <td class="align-middle">
+            <div class="progress">
+            <div class="progress-bar red" role="progressbar" aria-valuenow={{data[1][3]}} aria-valuemin="0" aria-valuemax="100" style="width: {{data[4][3]}}%; height: 25px;">{{data[4][3]}}</div>
+            </div>
         </td>
-        <td colspan="2" class="align-middle">
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow={{data['old_rating']}} aria-valuemin="0" aria-valuemax="100" style="width: {{data['old_rating']}}%; height: 35px;">{{data['old_rating']}}%</div>
-          </div>
-        </td>
-      </tr>
+          </tr>
+          {% endif %}
           </tbody>
       </table>
         </font>
     </div>
 </div>
+
+	<!-- Google Analytics -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-91863550-1', 'auto');
+		ga('send', 'pageview', {
+		  'page': '/riffle/',
+		  'title': 'Riffle'
+		});
+        ga('set', 'userId', ); // Set the user ID using signed-in user_id.
+	</script>
+	<!-- End Google Analytics -->
 
 </body>
 </html>
