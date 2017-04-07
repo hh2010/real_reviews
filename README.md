@@ -42,13 +42,15 @@ Next, I penalize the weighting of each review based on subjectivity,
 polarity, and word count. I use [NLTK](http://www.nltk.org/) sentiment analysis during this
 process.
 
-Finally, I populated a [Postgresql](https://www.postgresql.org/) database, pushed it to the cloud, and built a
-[Flask](http://flask.pocoo.org/) web app to analyze the results.
+Finally, I populated a [Postgresql](https://www.postgresql.org/) database, pushed it to the
+cloud, and built a [Flask](http://flask.pocoo.org/) web app to analyze the results.
 
 ## Supplemental Materials
 [Jupyter Notebook](riffle.ipynb)
 
-[Presentation](ppt/riffle.pdf)
+[Presentation - PPT](https://github.com/hh2010/riffle/blob/master/ppt/riffle.pptx?raw=true)
+
+[Presentation - PDF](ppt/riffle.pdf)
 
 ## Contact
 If you have any questions or comments on this project, you can find me below:
