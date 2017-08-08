@@ -17,11 +17,11 @@ pick out those features that determine quality reviews.
 Don't rely on 5 star ratings to make important decisions. Let **Riffle** do
 the work for you.
 
-Check it out at [riffle.hasanhaq.com](http://riffle.hasanhaq.com)
+**Note: The web app is down as I am no longer hosting a personal website. Let me know if you want me to revive it.**
 
 ## Usage
 * You are in Vegas for a weekend and want steak, but all the [top steakhouses](https://www.yelp.com/search?find_desc=Best+Steakhouse&find_loc=Las+Vegas%2C+NV) are rated 4-5 stars. How do you decide?
-* [Riffle it!](http://riffle.hasanhaq.com)
+* Riffle it!
   * Choose the steakhouses you want to compare.
     * Try: Prime, Gallagher's, and THE Steak House
 * Riffle will analyze the Yelp reviews, make adjustments, and compare them for you.
@@ -56,7 +56,3 @@ cloud, and built a [Flask](http://flask.pocoo.org/) web app to analyze the resul
 If you have any questions or comments on this project, you can find me below:
 
 E-mail: [hasan.haq@gmail.com](mailto:hasan.haq@gmail.com)
-
-Twitter: [@hhaq2010](http://www.twitter.com/hhaq2010)
-
-Website: [www.hasanhaq.com](http://www.hasanhaq.com)
